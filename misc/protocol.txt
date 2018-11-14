@@ -1,1 +1,7 @@
+%20 = space in data
+[] = variables
+| = or
 
+Request all shows for that date
+Client: GET_SHOWS [Date]
+Server: SHOWS_FOR_[2018-10-10] [Titolo] [20] [100]
