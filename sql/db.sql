@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS `prenotazioni` (
 CREATE TABLE IF NOT EXISTS `spettacoli` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Data` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Ora` TIME NOT NULL,
   `Titolo` varchar(100) NOT NULL,
   `Sala` int(3) unsigned NOT NULL,
   `Descrizione` varchar(200) DEFAULT '0',
