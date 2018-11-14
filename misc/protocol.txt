@@ -1,4 +1,5 @@
 %20 = space in data
+%21 = &
 [] = variables
 | = or
 
