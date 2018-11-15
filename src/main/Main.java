@@ -7,15 +7,20 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
-import misc.Account;
+
 import misc.Client;
+import misc.Show;
+
 import scenes.Home;
 import scenes.Selection;
+
 import windows.Login;
 
 public class Main extends Application{
 	
-	public static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	public static DateTimeFormatter sqlDateF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	public static DateTimeFormatter normalDateF = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	public static DateTimeFormatter timeF = DateTimeFormatter.ofPattern("HH:mm");
 
 	private static ClassLoader cl=null;
 	
@@ -30,7 +35,7 @@ public class Main extends Application{
 	private static Selection selection;
 	
 	public static Client client;
-	public static Account account;
+	public static String username;
 	
 	@Override
 	public void start(Stage s) throws Exception {
@@ -40,7 +45,7 @@ public class Main extends Application{
 	}
 	
 	public static void startup() {
-		account=login.getAccount();
+		username=login.getUsername();
 		client=login.getClient();
 		
 		home=new Home();
@@ -55,10 +60,11 @@ public class Main extends Application{
 		stage.setScene(scene_selection);
 		stage.centerOnScreen();
 		stage.setResizable(false);
+		stage.sizeToScene();
 		stage.setOnCloseRequest(e->{
 			try {
-				client.write("QUIT");
-				client.close();
+				//TODO client.write("QUIT");
+				//client.close();
 			}catch (Exception ex) {
 				ex.printStackTrace();
 			}
@@ -88,6 +94,11 @@ public class Main extends Application{
 		a.setHeaderText(header);
 		a.setContentText(content);
 		a.showAndWait();
+	}
+	
+	public static void switchToHome(Show show) {
+		//TODO
+		System.out.println(show);
 	}
 	
 	public static void main(String[] args) {
