@@ -30,7 +30,7 @@ public class ProtocolFormatter {
 	}
 	
 	public static String decode(String s) {
-		for (String code : mapCodes.keySet()) 
+		for (String code : mapCodes.keySet())
 			s=s.replaceAll(code, mapCodes.get(code)+"");
 		return s;
 	}
