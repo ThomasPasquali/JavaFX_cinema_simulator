@@ -6,5 +6,5 @@
 | = or
 
 Request all shows for that date
-Client: GET_SHOWS [Date]
-Server: SHOWS_FOR_[2018-10-10] [Titolo] [20] [100]
+Client: GET_SHOWS [Date(yyyy-MM-dd)]
+Server: SHOWS_FOR_[Date(yyyy-MM-dd)] [Title]/[Date(yyyy-MM-dd)]/[Time(HH:mm)]/[FreeSeats]/[TotalSeats]/[Hall]&... 
