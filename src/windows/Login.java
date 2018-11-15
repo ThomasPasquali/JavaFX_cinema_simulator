@@ -10,14 +10,15 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
 import main.Main;
-import misc.Account;
+
 import misc.Client;
 
 public class Login{
 
 	private Stage s;
-	private Account account;
+	private String username;
 	private Client client;
 	
 	public Login() {
@@ -66,16 +67,24 @@ public class Login{
         
         @FXML
         void accedi() {
-        	//TODO
+    		if(!fieldIP.getText().matches("(\\d{1,3}.){3}\\d{1,3}")) {
+    			Main.showErrorAlert("IP non corretto", ""); return;
+    		}
         	try {
-        		if(!fieldIP.getText().matches("(\\d{1,3}.){3}\\d{1,3}")) {Main.showErrorAlert("IP non corretto", ""); return;}
 				client=new Client(fieldIP.getText(), Integer.parseInt(fieldPort.getText()));
+				client.write("LOGIN "+fieldUsername.getText()+" "+fieldPw.getText());
+				if(client.readLine().equals("OK")) {
+					username=fieldUsername.getText();
+					s.close();
+					Main.startup();       
+				}else {
+					client.close();
+					Main.showErrorAlert("Credenziali non valide", "");
+				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
+				Main.showErrorAlert("Connessione rifiutata", "Controllare IP e PORTA");
 			}
-        	s.close();
-        	Main.startup();       	
         }
 
         @FXML
@@ -84,8 +93,8 @@ public class Login{
         }
     }
 
-	public Account getAccount() {
-		return account;
+	public String getUsername() {
+		return username;
 	}
 
 	public Client getClient() {
