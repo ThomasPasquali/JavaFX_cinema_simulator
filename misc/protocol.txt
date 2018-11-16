@@ -7,9 +7,8 @@
 
 Request all shows for that date
 Client: GET_SHOWS [Date(yyyy-MM-dd)]
-Server: SHOWS_FOR_[Date(yyyy-MM-dd)] [Title]/[Date(yyyy-MM-dd)]/[Time(HH:mm)]/[FreeSeats]/[TotalSeats]/[Hall]&...
+Server: NO_DATA | SHOWS_FOR_[Date(yyyy-MM-dd)] [Title]/[Date(yyyy-MM-dd)]/[Time(HH:mm)]/[FreeSeats]/[TotalSeats]/[Hall]&...
 
 Access request
 Client: LOGIN [Username] [Password]
-Server: OK or WRONG CREDENTIALS
-Client: Main.Startup() or Credenziali non valide
+Server: OK | WRONG CREDENTIALS
