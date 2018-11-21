@@ -1,6 +1,19 @@
 package main;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+import org.ini4j.Ini;
+import org.jasypt.util.password.StrongPasswordEncryptor;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -20,7 +33,9 @@ public class Main extends Application{
 	
 	public static DateTimeFormatter sqlDateF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	public static DateTimeFormatter normalDateF = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-	public static DateTimeFormatter timeF = DateTimeFormatter.ofPattern("HH:mm");
+	public static DateTimeFormatter timeF = DateTimeFormatter.ofPattern("HH:mm:ss");
+	
+	public static StrongPasswordEncryptor pwEncriptor;
 
 	private static ClassLoader cl=null;
 	
@@ -36,17 +51,33 @@ public class Main extends Application{
 	
 	public static Client client;
 	public static String username;
+	public static int id;
+	
+	private static String ip;
+	private static int port;
+	
+	public static byte[] salt;
 	
 	@Override
 	public void start(Stage s) throws Exception {
 		stage=s;
+		
 		cl=getClass().getClassLoader();
-		login=new Login();
+		
+		pwEncriptor=new StrongPasswordEncryptor();
+		
+		loadIniFile();
+		login=new Login(username, ip, port);
 	}
 	
-	public static void startup() {
+	public static void startup() throws IOException {
 		username=login.getUsername();
+		id=login.getId();
 		client=login.getClient();
+		ip=login.getIp();
+		port=login.getPort();
+		salt=loadSalt();
+		saveIniFile();
 		
 		home=new Home();
 		scene_home=new Scene(home);
@@ -63,8 +94,8 @@ public class Main extends Application{
 		stage.sizeToScene();
 		stage.setOnCloseRequest(e->{
 			try {
-				//TODO client.write("QUIT");
-				//client.close();
+				client.write("QUIT "+id);
+				client.close();
 			}catch (Exception ex) {
 				ex.printStackTrace();
 			}
@@ -78,6 +109,16 @@ public class Main extends Application{
 		a.setHeaderText(header);
 		a.setContentText(content);
 		a.showAndWait();
+	}
+	
+	private static byte[] loadSalt() throws IOException {
+		InputStream in = cl.getResourceAsStream("salt.txt"); 
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		String[] bytesS=reader.readLine().split(" ");
+		byte[] bytes=new byte[16];
+		for (int i = 0; i < bytes.length; i++) 
+			bytes[i]=Byte.parseByte(bytesS[i]);
+		return bytes;
 	}
 	
 	public static void showWarningAlert(String header, String content) {
@@ -101,6 +142,58 @@ public class Main extends Application{
 		System.out.println(show);
 	}
 	
+	private void loadIniFile() {
+		Ini i=null;
+		try {
+			i=new Ini(new FileReader("Cinema.ini"));
+		} catch (IOException e) {
+			File f=new File("Cinema.ini");
+			if(!f.exists()){
+				try {
+					f.createNewFile();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				saveDefaultIniFile();
+				loadIniFile();
+			}
+			e.printStackTrace();
+		}			
+		ip=i.get("dbInfo").get("ip");
+		try {
+			port=Integer.parseInt(i.get("dbInfo").get("port"));
+		} catch (NumberFormatException e) {
+			port=3306;
+		}
+		username=i.get("dbInfo").get("username");
+	}
+	
+	private static void saveIniFile(){
+		try {
+			Ini i=new Ini(new FileReader("Cinema.ini"));
+			i.put("dbInfo", "ip", ip);
+			i.put("dbInfo", "port", port);
+			i.put("dbInfo", "username", username);
+			i.store(new FileWriter("Cinema.ini"));
+		} catch (IOException e) {
+			System.out.println("error writing ini file");
+			e.printStackTrace();
+		}
+	}
+	
+	private void saveDefaultIniFile() {
+		try {
+			Ini i=new Ini(new FileReader("Cinema.ini"));
+			i.put("dbInfo", "ip", "127.0.0.1");
+			i.put("dbInfo", "port", "1234");
+			i.put("dbInfo", "username", "");
+			i.store(new FileWriter("Cinema.ini"));
+		} catch (IOException e) {
+			System.out.println("error writing def ini file");
+			e.printStackTrace();
+		}
+	}
+
 	public static void main(String[] args) {
 		launch();
 	}
