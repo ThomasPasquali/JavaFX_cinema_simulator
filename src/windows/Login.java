@@ -14,14 +14,20 @@ import javafx.stage.Stage;
 import main.Main;
 
 import misc.Client;
+import misc.SHAEncryptor;
 
 public class Login{
 
 	private Stage s;
-	private String username;
+	private String username, ip;
+	private int port;
+	private int id;
 	private Client client;
 	
-	public Login() {
+	public Login(String username, String ip, int port) {
+		this.username=username;
+		this.ip=ip;
+		this.port=port;
 		s=new Stage();
 		s.setTitle("Login");
 		Scene scene=new Scene(new Root());
@@ -63,18 +69,28 @@ public class Login{
         	fieldIP.textProperty().addListener((ObservableValue<? extends String> arg0, String arg1, String newValue)->{
         		fieldIP.setText(newValue.replaceAll("[^\\d.]", ""));
         	});
+        	fieldIP.setText(ip);
+        	fieldPort.setText(port+"");
+        	fieldUsername.setText(username);
         }
         
         @FXML
-        void accedi() {
+        void accedi() throws IOException {
     		if(!fieldIP.getText().matches("(\\d{1,3}.){3}\\d{1,3}")) {
     			Main.showErrorAlert("IP non corretto", ""); return;
     		}
         	try {
 				client=new Client(fieldIP.getText(), Integer.parseInt(fieldPort.getText()));
-				client.write("LOGIN "+fieldUsername.getText()+" "+fieldPw.getText());
-				if(client.readLine().equals("OK")) {
+				client.write(
+						"LOGIN "+
+						fieldUsername.getText()+" "+
+						SHAEncryptor.get_SHA_1_SecurePassword(fieldPw.getText(), Main.salt));
+				String answ=client.readLine();
+				if(answ.startsWith("OK")) {
 					username=fieldUsername.getText();
+					id=Integer.parseInt(answ.split(" ")[1]);
+					ip=fieldIP.getText();
+					port=Integer.parseInt(fieldPort.getText());
 					s.close();
 					Main.startup();       
 				}else {
@@ -83,6 +99,7 @@ public class Login{
 				}
 			} catch (IOException e) {
 				//e.printStackTrace();
+				if(client!=null) client.close();
 				Main.showErrorAlert("Connessione rifiutata", "Controllare IP e PORTA");
 			}
         }
@@ -90,11 +107,24 @@ public class Login{
         @FXML
         void registrati() {
         	//TODO
+        	System.out.println(SHAEncryptor.get_SHA_1_SecurePassword(fieldPw.getText(), Main.salt));
         }
     }
 
 	public String getUsername() {
 		return username;
+	}
+	
+	public String getIp() {
+		return ip;
+	}
+	
+	public int getPort() {
+		return port;
+	}
+	
+	public int getId() {
+		return id;
 	}
 
 	public Client getClient() {
