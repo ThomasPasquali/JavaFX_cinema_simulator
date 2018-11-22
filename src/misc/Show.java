@@ -2,17 +2,19 @@ package misc;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 import main.Main;
 
 public class Show {
 	
-	private String title;
+	private static DateTimeFormatter timeF=DateTimeFormatter.ofPattern("HH:mm");
+	private String title, hall;
 	private LocalDate date;
 	private LocalTime time;
-	private int free, tot, hall;
+	private int free, tot;
 	
-	public Show(String title, LocalDate date, LocalTime time, int free, int tot, int hall) {
+	public Show(String title, LocalDate date, LocalTime time, int free, int tot, String hall) {
 		this.title = title;
 		this.date = date;
 		this.time = time;
@@ -23,6 +25,6 @@ public class Show {
 	
 	@Override
 	public String toString() {
-		return title+" Time: "+Main.timeF.format(time)+" Hall: "+hall+" Free seats: "+free+"/"+tot;
+		return title+" Time: "+timeF.format(time)+" Hall: "+hall+" Free seats: "+free+"/"+tot;
 	}
 }
