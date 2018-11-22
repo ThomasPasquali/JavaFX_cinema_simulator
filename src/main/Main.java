@@ -7,13 +7,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 import org.ini4j.Ini;
-import org.jasypt.util.password.StrongPasswordEncryptor;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -34,8 +30,6 @@ public class Main extends Application{
 	public static DateTimeFormatter sqlDateF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	public static DateTimeFormatter normalDateF = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	public static DateTimeFormatter timeF = DateTimeFormatter.ofPattern("HH:mm:ss");
-	
-	public static StrongPasswordEncryptor pwEncriptor;
 
 	private static ClassLoader cl=null;
 	
@@ -63,8 +57,8 @@ public class Main extends Application{
 		stage=s;
 		
 		cl=getClass().getClassLoader();
-		
-		pwEncriptor=new StrongPasswordEncryptor();
+
+		salt=loadSalt();
 		
 		loadIniFile();
 		login=new Login(username, ip, port);
@@ -76,7 +70,6 @@ public class Main extends Application{
 		client=login.getClient();
 		ip=login.getIp();
 		port=login.getPort();
-		salt=loadSalt();
 		saveIniFile();
 		
 		home=new Home();
