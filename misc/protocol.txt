@@ -12,3 +12,11 @@ Server: NO_DATA | SHOWS_FOR_[Date(yyyy-MM-dd)] [Title]/[Date(yyyy-MM-dd)]/[Time(
 Access request
 Client: LOGIN [Username] [Password]
 Server: OK | WRONG CREDENTIALS
+
+---------------------------
+
+Prenota clicked
+Client: BOOK [Account]/[Spettacolo]/[Seat_number1 Seat_number2 ...]/[Data_prenotazione]?
+Server: OK | ERROR [Message]
+
+
