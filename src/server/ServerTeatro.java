@@ -16,7 +16,7 @@ public class ServerTeatro {
 	private ServerSocket server;
 	private HashMap<Integer, ClientTeatro> mapID_Client;
 	private Connection connection;
-	private String db_ip="127.0.0.1", db_port="3306", db_username="root", db_password="", db_name="teatro";
+	private String db_ip="127.0.0.1", db_port="3306", db_username="root", db_password="", db_name="cinema";
 	
 	public ServerTeatro(int port) throws IOException, SQLException {
 		mapID_Client=new HashMap<>();
@@ -31,26 +31,35 @@ public class ServerTeatro {
 				c.write("Expected LOGIN [Username] [Password]");
 			
 			String[] params=request.split(" ");
-			
-			Statement s=connection.createStatement();
-			s.execute("USE "+db_name);
-			ResultSet set=s.executeQuery(
-					"SELECT ID\r\n" + 
-					"FROM accounts\r\n" + 
-					"WHERE Username = '"+params[1]+"' AND Password = '"+(params.length>2?params[2]:"")+"'");
-			set.next();
-			
-			//TODO giusto
-			if(set.isLast()) {
-				System.out.println("no");
-				c.write("WRONG CREDENTIALS");
-				c.close();
+			if(params.length>1) {
+				Statement s=connection.createStatement();
+				s.execute("USE "+db_name);
+				ResultSet set=s.executeQuery(
+						"SELECT ID, Password\r\n" + 
+						"FROM accounts\r\n" + 
+						"WHERE Username = '"+params[1]+"'");
+				set.next();
+				if(!set.isLast()) {
+					c.write("WRONG CREDENTIALS");
+					c.close();
+				}else {
+					if(params[2].equals(set.getString("Password"))) {
+						mapID_Client.put(set.getInt("ID"), new ClientTeatro(c, set.getInt("ID"), connection, this));
+						c.write("OK "+set.getInt("ID"));
+					}else {
+						c.write("WRONG CREDENTIALS");
+						c.close();
+					}
+				}
 			}else {
-				System.out.println("si");
-				mapID_Client.put(set.getInt("ID"), new ClientTeatro(c, connection));
-				c.write("OK");
+				c.write("INVALID SINTAX");
+				c.close();
 			}
 		}
+	}
+	
+	public void removeClient(int id) {
+		mapID_Client.remove(id);
 	}
 		
 	public static void main(String[] args) throws IOException, SQLException {
