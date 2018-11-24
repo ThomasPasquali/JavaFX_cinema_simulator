@@ -7,13 +7,17 @@
 
 Request all shows for that date
 Client: GET_SHOWS [Date(yyyy-MM-dd)]
-Server: NO_DATA | SHOWS_FOR_[Date(yyyy-MM-dd)] [Title]/[Date(yyyy-MM-dd)]/[Time(HH:mm)]/[FreeSeats]/[TotalSeats]/[Hall]&...
+Server: NO_DATA | SHOWS_FOR_[Date(yyyy-MM-dd)] [ID]/[Title]/[Date(yyyy-MM-dd)]/[Time(HH:mm)]/[FreeSeats]/[TotalSeats]/[Hall]&...
 
 Access request
 Client: LOGIN [Username] [Password]
 Server: OK | WRONG CREDENTIALS
 
 ---------------------------
+
+Get occupied seats
+Client: GET_OCCUPIED_SEATS [ID]
+Server: OCCUPIED [num1] [num2] [...]
 
 Prenota clicked
 Client: BOOK [Account]/[Spettacolo]/[Seat_number1 Seat_number2 ...]/[Data_prenotazione]?
