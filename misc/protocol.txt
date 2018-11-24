@@ -17,7 +17,7 @@ Server: OK | WRONG CREDENTIALS
 
 Get occupied seats
 Client: GET_OCCUPIED_SEATS [ID]
-Server: OCCUPIED [num1] [num2] [...]
+Server: OCCUPIED [num1]/[num2]/[...]
 
 Prenota clicked
 Client: BOOK [Account]/[Spettacolo]/[Seat_number1 Seat_number2 ...]/[Data_prenotazione]?
