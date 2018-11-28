@@ -21,6 +21,7 @@ import misc.Client;
 import misc.Show;
 
 import scenes.Home;
+import scenes.Intro;
 import scenes.Selection;
 
 import windows.Login;
@@ -31,7 +32,7 @@ public class Main extends Application{
 	public static DateTimeFormatter normalDateF = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	public static DateTimeFormatter timeF = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-	private static ClassLoader cl=null;
+	public static ClassLoader cl=null;
 	
 	private static Login login;
 	
@@ -39,9 +40,11 @@ public class Main extends Application{
 	
 	private static Scene scene_home;
 	private static Scene scene_selection;
+	private static Scene scene_intro;
 	
 	private static Home home;
 	private static Selection selection;
+	private static Intro intro;
 	
 	public static Client client;
 	public static String username;
@@ -52,12 +55,14 @@ public class Main extends Application{
 	
 	public static byte[] salt;
 	
+	public static final double MAX_HEIGHT=700;
+	
 	@Override
 	public void start(Stage s) throws Exception {
 		stage=s;
 		
 		cl=getClass().getClassLoader();
-
+		
 		salt=loadSalt();
 		
 		loadIniFile();
@@ -74,16 +79,25 @@ public class Main extends Application{
 		
 		home=new Home();
 		scene_home=new Scene(home);
-		scene_home.getStylesheets().add(cl.getResource("biggerFont.css").toExternalForm());
+		scene_home.getStylesheets().addAll(
+				cl.getResource("biggerFont.css").toExternalForm(),
+				cl.getResource("home.css").toExternalForm());
 		
 		selection=new Selection();
 		scene_selection=new Scene(selection);
-		scene_selection.getStylesheets().add(cl.getResource("biggerFont.css").toExternalForm());
+		scene_selection.getStylesheets().addAll(
+				cl.getResource("biggerFont.css").toExternalForm(),
+				cl.getResource("selection.css").toExternalForm());
+		
+		intro=new Intro();
+		scene_intro=new Scene(intro);
+		scene_intro.getStylesheets().add(cl.getResource("intro.css").toExternalForm());
 		
 		stage.setTitle("Prenotazioni teatro");
-		stage.setScene(scene_selection);
+		stage.setScene(scene_intro);
 		stage.centerOnScreen();
 		stage.setResizable(false);
+		stage.setMaxHeight(MAX_HEIGHT);
 		stage.sizeToScene();
 		stage.setOnCloseRequest(e->{
 			try {
@@ -130,9 +144,20 @@ public class Main extends Application{
 		a.showAndWait();
 	}
 	
-	public static void switchToHome(Show show) {
-		//TODO
-		System.out.println(show);
+	public static void switchToHome(Show show) throws IOException {
+		home.setShow(show);
+		stage.setScene(scene_home);
+		stage.sizeToScene();
+	}
+
+	public static void switchToSelection() {
+		stage.setScene(scene_selection);
+		stage.sizeToScene();
+	}
+	
+	public static void switchToIntro() {
+		stage.setScene(scene_intro);
+		stage.sizeToScene();
 	}
 	
 	private void loadIniFile() {
