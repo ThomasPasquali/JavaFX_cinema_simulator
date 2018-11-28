@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.StringJoiner;
 
 import misc.Client;
+import misc.ProtocolFormatter;
 
 public class ClientTeatro extends Thread{
 
@@ -47,25 +48,41 @@ public class ClientTeatro extends Thread{
 					while(set.next()) {
 						StringJoiner sj=new StringJoiner("/");
 						sj.add(set.getString("id"));
-						sj.add(set.getString("Titolo"));
-						sj.add(params[1]);
-						sj.add(set.getString("Ora"));
+						sj.add(ProtocolFormatter.encode(set.getString("Titolo")));
+						sj.add(ProtocolFormatter.encode(params[1]));
+						sj.add(ProtocolFormatter.encode(set.getString("Ora")));
 						sj.add(set.getString("Liberi"));
 						sj.add(set.getString("Totali"));
 						sj.add(set.getString("Hall"));
 						sjAnd.add(sj.toString());
 					}
-					if(sjAnd.toString().isEmpty()) {
-						System.out.println("non trovato");
+					if(sjAnd.toString().isEmpty())
 						client.write("NO_DATA");
+					else
+						client.write("SHOWS_FOR_"+params[1]+" "+sjAnd.toString());	
+				}else if(params[0].equals("GET_OCCUPIED_SEATS_FOR")){
+					ResultSet set=connection.createStatement().executeQuery(
+							"SELECT Numero_posto AS n\r\n" + 
+							"FROM prenotazioni\r\n" + 
+							"WHERE Spettacolo = "+params[1]);
+					StringJoiner sj=new StringJoiner("/");
+					while(set.next())
+						sj.add(set.getString("n"));
+					client.write("OCCUPIED "+sj.toString());
+				}else if(params[0].equals("BOOK")){
+					try {
+						String[] seats=params[2].split("/");
+						Statement s=connection.createStatement();
+						for (String seat : seats) {//TODO broadcast
+							s.executeUpdate(
+									"INSERT INTO prenotazioni (Account, Spettacolo, Numero_posto)\r\n" + 
+									"VALUES ("+id+", "+params[1]+", "+seat+")");
+						}
+						client.write("OK");
+					} catch (Exception e) {
+						client.write("ERROR "+e.toString());
 					}
-						
-					else {
-						System.out.println("trovato");
-							client.write("SHOWS_FOR_"+params[1]+" "+sjAnd.toString());
-					}
-					
-				}
+				}//More...
 			}
 		} catch (Exception e) {
 			server.removeClient(id);
