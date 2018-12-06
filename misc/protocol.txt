@@ -13,7 +13,9 @@ Access request (UNI/MUL is for recognize an unicast or broadcast socket), only o
 Client: LOGIN [Username] [Password] [UNI/MUL]
 Server: OK | WRONG CREDENTIALS
 
----------------------------
+Book sets
+Client: BOOK [ID show] [Seat1]/[Seat2]...
+Server: OK | ERROR [Message]
 
 Get occupied seats
 Client: GET_OCCUPIED_SEATS [ID]
