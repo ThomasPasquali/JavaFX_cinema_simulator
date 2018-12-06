@@ -33,4 +33,4 @@ BROADCASTS
 
 When a seat is booked
 Server: BOOKED [Show_id] [Seat]
-Client: /*no anwser*/
+Client: /*no answer*/
