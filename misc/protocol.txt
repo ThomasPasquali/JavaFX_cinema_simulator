@@ -9,8 +9,8 @@ Request all shows for that date
 Client: GET_SHOWS [Date(yyyy-MM-dd)]
 Server: NO_DATA | SHOWS_FOR_[Date(yyyy-MM-dd)] [ID]/[Title]/[Date(yyyy-MM-dd)]/[Time(HH:mm)]/[FreeSeats]/[TotalSeats]/[Hall]&...
 
-Access request
-Client: LOGIN [Username] [Password]
+Access request (UNI/MUL is for recognize an unicast or broadcast socket), only one access at the same time is permitted for each account
+Client: LOGIN [Username] [Password] [UNI/MUL]
 Server: OK | WRONG CREDENTIALS
 
 ---------------------------
