@@ -1,0 +1,15 @@
+Main:
+creato in cima le scene
+aggiunto reservation in startup()
+creato metodo switchToReservation
+
+Intro:
+aggiunto switchToReservation su void delete()
+
+Reservation:
+Creato la classe e i metodi
+
+Creato classe ActReservation con tutti i metodi
+
+ClientTeatro:
+provato ad aggiungere il metodo che prende GET_ACT_RESERV

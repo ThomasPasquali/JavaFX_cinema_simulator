@@ -1,0 +1,26 @@
+%20 = space in data
+%21 = &
+%22 = /
+%23 = %
+[] = variables
+| = or
+
+Request all shows for that date
+Client: GET_SHOWS [Date(yyyy-MM-dd)]
+Server: NO_DATA | SHOWS_FOR_[Date(yyyy-MM-dd)] [ID]/[Title]/[Date(yyyy-MM-dd)]/[Time(HH:mm)]/[FreeSeats]/[TotalSeats]/[Hall]&...
+
+Access request (UNI/MUL is for recognize an unicast or broadcast socket), only one access at the same time is permitted for each account
+Client: LOGIN [Username] [Password] [UNI/MUL]
+Server: OK | WRONG CREDENTIALS
+
+---------------------------
+
+Get occupied seats
+Client: GET_OCCUPIED_SEATS [ID]
+Server: OCCUPIED [num1]/[num2]/[...]
+
+Prenota clicked
+Client: BOOK [Account]/[Spettacolo]/[Seat_number1 Seat_number2 ...]/[Data_prenotazione]?
+Server: OK | ERROR [Message]
+
+

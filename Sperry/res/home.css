@@ -1,0 +1,16 @@
+GridPane{
+	-fx-background-color: red;
+}
+
+AnchorPane{
+	-fx-background-color: blue;
+	-fx-border-width:2px;
+	-fx-border-style: solid;
+	-fx-background-repeat: no-repeat;
+}
+
+Text:hover{
+	-fx-scale-x: 1.5;
+	-fx-scale-y: 1.5;
+	-fx-fill: red;
+}
