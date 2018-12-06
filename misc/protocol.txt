@@ -25,6 +25,11 @@ Server: OK | ERROR [Message]
 
 Reserve the seat on other clients
 Client: RESERVE [Show_id] [Seat]
+Server: broadcasts the message
+
+Free the seat on other clients
+Client: FREE [Show_id] [Seat]
+Server: broadcasts the message
 
 Get active reservation for the account
 Client GET_ACT_RESERV [Account_id]
