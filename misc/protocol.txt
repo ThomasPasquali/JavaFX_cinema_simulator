@@ -39,6 +39,10 @@ Server: NO_RESERVATIONS
 
 BROADCASTS
 
-When a seat is booked
-Server: BOOKED [Show_id] [Seat]
+When a seat is selected on a client
+Server: RESERVED [Show_id] [Seat]
+Client: /*no answer*/
+
+When a seat is unselected on a client
+Server: FREED [Show_id] [Seat]
 Client: /*no answer*/
