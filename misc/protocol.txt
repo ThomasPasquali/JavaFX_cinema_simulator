@@ -46,3 +46,11 @@ Client: /*no answer*/
 When a seat is unselected on a client
 Server: FREED [Show_id] [Seat]
 Client: /*no answer*/
+
+When a seat is booked from a client
+Server: BOOKED [Show_id] [Seat]
+Client: /*no answer*/
+
+When a reservation is deleted from a client
+Server: UNBOOKED [Show_id] [Seat]
+Client: /*no answer*/
