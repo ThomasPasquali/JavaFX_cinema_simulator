@@ -27,4 +27,10 @@ Get active reservation for the account
 Client GET_ACT_RESERV [Account_id]
 Server: NO_RESERVATIONS
 
+----------------------------
 
+BROADCASTS
+
+When a seat is booked
+Server: BOOKED [Show_id] [Seat]
+Client: /*no anwser*/
