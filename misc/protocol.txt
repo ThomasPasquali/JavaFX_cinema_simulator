@@ -23,6 +23,9 @@ Prenota clicked
 Client: BOOK [Account]/[Spettacolo]/[Seat_number1 Seat_number2 ...]/[Data_prenotazione]?
 Server: OK | ERROR [Message]
 
+Reserve the seat on other clients
+Client: RESERVE [Show_id] [Seat]
+
 Get active reservation for the account
 Client GET_ACT_RESERV [Account_id]
 Server: NO_RESERVATIONS
