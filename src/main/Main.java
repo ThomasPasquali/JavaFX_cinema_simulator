@@ -16,12 +16,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
-
+import misc.BroadcastUpdater;
 import misc.Client;
 import misc.Show;
 
 import scenes.Home;
 import scenes.Intro;
+import scenes.Reservation;
 import scenes.Selection;
 
 import windows.Login;
@@ -38,17 +39,22 @@ public class Main extends Application{
 	
 	private static Stage stage;
 	
+	private static BroadcastUpdater updater;
+	
 	private static Scene scene_home;
 	private static Scene scene_selection;
 	private static Scene scene_intro;
+	private static Scene scene_reservation;
 	
 	private static Home home;
 	private static Selection selection;
 	private static Intro intro;
+	private static Reservation reservation;
 	
-	public static Client client;
+	public static Client client_unicast, client_broadcast;
 	public static String username;
 	public static int id;
+	public static boolean darkTheme;
 	
 	private static String ip;
 	private static int port;
@@ -72,9 +78,11 @@ public class Main extends Application{
 	public static void startup() throws IOException {
 		username=login.getUsername();
 		id=login.getId();
-		client=login.getClient();
+		client_unicast=login.getClient_unicast();
+		client_broadcast=login.getClient_broadcast();
 		ip=login.getIp();
 		port=login.getPort();
+		darkTheme=login.isDarkTheme();
 		saveIniFile();
 		
 		home=new Home();
@@ -93,6 +101,15 @@ public class Main extends Application{
 		scene_intro=new Scene(intro);
 		scene_intro.getStylesheets().add(cl.getResource("intro.css").toExternalForm());
 		
+		reservation=new Reservation();
+		scene_reservation=new Scene(reservation);
+		scene_reservation.getStylesheets().addAll(
+				cl.getResource("biggerFont.css").toExternalForm(),
+				cl.getResource("selection.css").toExternalForm());
+		
+		updater=new BroadcastUpdater(client_broadcast);
+		updater.start();
+		
 		stage.setTitle("Prenotazioni teatro");
 		stage.setScene(scene_intro);
 		stage.centerOnScreen();
@@ -101,10 +118,17 @@ public class Main extends Application{
 		stage.sizeToScene();
 		stage.setOnCloseRequest(e->{
 			try {
-				client.write("QUIT "+id);
-				client.close();
+				client_unicast.write("QUIT "+id);
+				client_unicast.readLine();
+				client_unicast.close();
+				updater.interrupt();
+				client_broadcast.write("QUIT "+id);
+				client_broadcast.readLine();
+				client_broadcast.close();
+				System.exit(0);
 			}catch (Exception ex) {
 				ex.printStackTrace();
+				System.exit(0);
 			}
 		});
 		stage.show();
@@ -146,18 +170,29 @@ public class Main extends Application{
 	
 	public static void switchToHome(Show show) throws IOException {
 		home.setShow(show);
+		home.setActive(true);
 		stage.setScene(scene_home);
 		stage.sizeToScene();
 	}
 
 	public static void switchToSelection() {
+		selection.refresh();
 		stage.setScene(scene_selection);
 		stage.sizeToScene();
+		home.setActive(false);
 	}
 	
 	public static void switchToIntro() {
 		stage.setScene(scene_intro);
 		stage.sizeToScene();
+		home.setActive(false);
+	}
+	
+	public static void switchToReservation() {
+		reservation.refresh();
+		stage.setScene(scene_reservation);
+		stage.sizeToScene();
+		home.setActive(false);
 	}
 	
 	private void loadIniFile() {
@@ -211,7 +246,24 @@ public class Main extends Application{
 			e.printStackTrace();
 		}
 	}
+	
+	public static String getServerIp() {
+		return ip;
+	}
+	
+	public static int getServerPort() {
+		return port;
+	}
+	
+	public static Home getHome() {
+		return home;
+	}
 
+	public static String getExtension(String path) {
+		String[] s= path.split("\\.");
+		return s[s.length-1];
+	}
+	
 	public static void main(String[] args) {
 		launch();
 	}

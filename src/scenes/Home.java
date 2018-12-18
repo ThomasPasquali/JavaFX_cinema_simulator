@@ -21,6 +21,7 @@ import misc.Show;
 
 public class Home extends BorderPane{
 	
+	private boolean active;
 	private List<Cell> cells;
 	private static final int SEATS_PER_ROW=10;
 	private Show show;
@@ -40,7 +41,13 @@ public class Home extends BorderPane{
 	private GridPane grid;
 	
 	@FXML
-	private Label lblTitle;
+    private Label lblTimestamp;
+
+    @FXML
+    private Label lblTitle;
+
+    @FXML
+    private Label lblHall;
 	
 	@FXML
     void book() throws IOException {
@@ -50,12 +57,14 @@ public class Home extends BorderPane{
 				cell.setColor("red");
 				sj.add(cell.getNumber()+"");
 			}
-		//BOOK [ID show] [Seat1]/[Seat2]...
-		Main.client.write("BOOK "+show.getId()+" "+sj.toString());
-		//OK | ERROR [Message]
-		String ans=Main.client.readLine();
-		if(ans.equals("OK")) { Main.showInfoAlert("Prenotato con successo", ""); del();}
-		else						  Main.showErrorAlert("Errore durante la prenotazione", ans.split(" ")[1]);
+		if(sj.toString().isEmpty()) 
+			Main.showErrorAlert("Selezionare almeno un posto", "");
+		else {
+			Main.client_unicast.write("BOOK "+show.getId()+" "+sj.toString());
+			String ans=Main.client_unicast.readLine();
+			if(ans.equals("OK")) { Main.showInfoAlert("Prenotato con successo", ""); del();}
+			else						  Main.showErrorAlert("Errore durante la prenotazione", ans.split(" ")[1]);
+		}
     }
 
     @FXML
@@ -70,8 +79,21 @@ public class Home extends BorderPane{
 			for (int j = 0; j < SEATS_PER_ROW && numero <= tot; j++) {
 				Cell c=new Cell(i, j, numero, "gray");
 				c.setOnMouseClicked(e->{
-					if(c.getColor().equals("red")) Main.showErrorAlert("La poltrona è gia prenotata", "Selezionane un'altra");
-					else c.setColor(c.getColor().equals("gray")?"green":"gray");
+					if(c.getColor().equals("yellow")) Main.showWarningAlert("La poltrona è gia selezionata da un altro utente", "Selezionane un'altra");
+					else if(c.getColor().equals("red")) Main.showErrorAlert("La poltrona è gia prenotata", "Selezionane un'altra");
+					else{
+						try {
+							if(c.getColor().equals("gray")) {
+								Main.client_unicast.write("RESERVE "+show.getId()+" "+c.getNumber());
+								c.setColor("green");
+							}else {
+								Main.client_unicast.write("FREE "+show.getId()+" "+c.getNumber());
+								c.setColor("gray");
+							}
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+					}
 				});
 				cells.add(c);
 				grid.add(c, j, i);
@@ -106,15 +128,53 @@ public class Home extends BorderPane{
 	public void setShow(Show show) throws IOException {
 		this.show=show;
 		initGrid(show.getTot());
-		lblTitle.setText(show.getTitle()+" Sala: "+show.getHall());
+		lblTitle.setText(show.getTitle());
+		lblHall.setText(show.getHall());
+		lblTimestamp.setText(Main.normalDateF.format(show.getDate())+"\r\n"+show.getFormattedTime());
 		if(show.getFree()<show.getTot()) {
-			Main.client.write("GET_OCCUPIED_SEATS_FOR "+show.getId());
-			String[] s=Main.client.readLine().split(" ")[1].split("/");
+			Main.client_unicast.write("GET_OCCUPIED_SEATS_FOR "+show.getId());
+			String[] s=Main.client_unicast.readLine().split(" ")[1].split("/");
 			int[] occupiedSeats=new int[s.length];
 			for (int i = 0; i < occupiedSeats.length; i++) 
 				occupiedSeats[i]=Integer.parseInt(s[i]);
 			setOccupied(occupiedSeats);
 		}
+	}
+	
+	/**
+	 * Sets the color to red
+	 * @param seat
+	 */
+	public void blockSeat(int seat) {
+		getCell(seat).setColor("red");
+	}
+	
+	/**
+	 * Sets the color to yellow
+	 * @param seat
+	 */
+	public void reserveSeat(int seat) {
+		getCell(seat).setColor("yellow");
+	}
+	
+	/**
+	 * Sets the color to green
+	 * @param seat
+	 */
+	public void freeSeat(int seat) {
+		getCell(seat).setColor("gray");
+	}
+	
+	public Show getShow() {
+		return show;
+	}
+	
+	public boolean isActive() {
+		return active;
+	}
+	
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 	
 }

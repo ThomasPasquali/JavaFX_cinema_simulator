@@ -48,6 +48,7 @@ public class Cell extends StackPane {
 		map.put("gray", Main.cl.getResource("gray.png"));
 		map.put("green", Main.cl.getResource("green.png"));
 		map.put("red", Main.cl.getResource("red.png"));
+		map.put("yellow", Main.cl.getResource("yellow.png"));
 		return map;
 	}
 	

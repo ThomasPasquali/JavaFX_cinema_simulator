@@ -41,6 +41,6 @@ public class Intro extends VBox{
 
     @FXML
     void delete() {
-    	//TODO
+    	Main.switchToReservation();
     }
 }

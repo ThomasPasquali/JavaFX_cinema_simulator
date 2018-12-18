@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -22,7 +23,8 @@ public class Login{
 	private String username, ip;
 	private int port;
 	private int id;
-	private Client client;
+	private boolean darkTheme;
+	private Client client_unicast, client_broadcast;
 	
 	public Login(String username, String ip, int port) {
 		this.username=username;
@@ -59,7 +61,25 @@ public class Login{
 
         @FXML
         private PasswordField fieldPw;
+        
+        @FXML
+        RadioButton rdbtnDark;
 
+        @FXML
+        RadioButton rdbtnLight;
+
+        @FXML
+        void light() {
+        	rdbtnDark.setSelected(false);
+        	rdbtnLight.setSelected(true);
+        }
+
+        @FXML
+        void dark() {
+        	rdbtnDark.setSelected(true);
+        	rdbtnLight.setSelected(false);
+        }
+        
         @FXML
         void initialize() {
         	fieldPort.textProperty().addListener((ObservableValue<? extends String> arg0, String arg1, String newValue)->{
@@ -79,27 +99,45 @@ public class Login{
     		if(!fieldIP.getText().matches("(\\d{1,3}.){3}\\d{1,3}")) {
     			Main.showErrorAlert("IP non corretto", ""); return;
     		}
+    		if(fieldPw.getText().isEmpty()) {
+    			Main.showErrorAlert("Password mancante", ""); return;
+    		}
         	try {
-				client=new Client(fieldIP.getText(), Integer.parseInt(fieldPort.getText()));
-				client.write(
+				client_unicast=new Client(fieldIP.getText(), Integer.parseInt(fieldPort.getText()));
+				client_unicast.write(
 						"LOGIN "+
 						fieldUsername.getText()+" "+
-						SHAEncryptor.get_SHA_1_SecurePassword(fieldPw.getText(), Main.salt));
-				String answ=client.readLine();
+						SHAEncryptor.get_SHA_1_SecurePassword(fieldPw.getText(), Main.salt)+" UNI");
+				String answ=client_unicast.readLine();
+				String[] params=answ.split(" ");
 				if(answ.startsWith("OK")) {
-					username=fieldUsername.getText();
-					id=Integer.parseInt(answ.split(" ")[1]);
-					ip=fieldIP.getText();
-					port=Integer.parseInt(fieldPort.getText());
-					s.close();
-					Main.startup();       
+					client_broadcast=new Client(fieldIP.getText(), Integer.parseInt(fieldPort.getText()));
+					client_broadcast.write(
+							"LOGIN "+
+							fieldUsername.getText()+" "+
+							SHAEncryptor.get_SHA_1_SecurePassword(fieldPw.getText(), Main.salt)+" MUL");
+					answ=client_broadcast.readLine();
+					
+					if(answ.startsWith("OK")) {
+						username=fieldUsername.getText();
+						id=Integer.parseInt(params[1]);
+						ip=fieldIP.getText();
+						port=Integer.parseInt(fieldPort.getText());
+						darkTheme=rdbtnDark.isSelected();
+						s.close();
+						Main.startup();  
+					}else {
+						client_unicast.close();
+						client_broadcast.close();
+						Main.showErrorAlert("Credenziali non valide", answ);
+					}
 				}else {
-					client.close();
-					Main.showErrorAlert("Credenziali non valide", "");
+					client_unicast.close();
+					Main.showErrorAlert("Credenziali non valide", answ);
 				}
 			} catch (IOException e) {
 				//e.printStackTrace();
-				if(client!=null) client.close();
+				if(client_unicast!=null) client_unicast.close();
 				Main.showErrorAlert("Connessione rifiutata", "Controllare IP e PORTA");
 			}
         }
@@ -126,9 +164,17 @@ public class Login{
 	public int getId() {
 		return id;
 	}
+	
+	public boolean isDarkTheme() {
+    	return darkTheme;
+    }
 
-	public Client getClient() {
-		return client;
+	public Client getClient_unicast() {
+		return client_unicast;
+	}
+	
+	public Client getClient_broadcast() {
+		return client_broadcast;
 	}
     
 }

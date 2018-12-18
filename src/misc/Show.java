@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-public class Show {
+public class Show{
 	
 	private static DateTimeFormatter timeF=DateTimeFormatter.ofPattern("HH:mm");
 	private String title, hall;
@@ -21,7 +21,14 @@ public class Show {
 		this.tot = tot;
 		this.hall = hall;
 	}
-
+	
+	public Show(int id, String title, LocalDate date, LocalTime time) {
+		this.id=id;
+		this.title = title;
+		this.date = date;
+		this.time = time;
+	}
+	
 	public String getTitle() {
 		return title;
 	}
@@ -36,6 +43,10 @@ public class Show {
 
 	public LocalTime getTime() {
 		return time;
+	}
+	
+	public String getFormattedTime() {
+		return timeF.format(time);
 	}
 
 	public int getFree() {
