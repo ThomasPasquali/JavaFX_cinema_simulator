@@ -56,3 +56,16 @@ Client: /*no answer*/
 When a reservation is deleted from a client
 Server: UNBOOKED [Show_id] [Seat]
 Client: /*no answer*/
+
+-------------------------------
+
+IMAGES
+Notice that the server will be listening on the following port of the main server's one
+
+Whenever you request an image you'll be given a token that will allow you to get your image
+
+IMPORTANT: the socket streams type must be bytes and NOT characters
+
+Client: [the bytes of the given token]
+Images_server: [the bytes of the image]
+THEN THE CONNECTION CLOSES
