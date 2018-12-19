@@ -1,0 +1,250 @@
+.root {
+	/* Swatch Colors - Blue*/
+	-swatch-100: #BBDEFB;
+	-swatch-200: #90CAF9;
+	-swatch-300: #64BEF6;
+	-swatch-400: #42A5F5;
+	-swatch-500: #2196F3;
+	/*default text */
+	-fx-text-base-color: rgb(200.0, 200.0, 200.0);
+	-fx-text-button-normal: -swatch-500;
+	-fx-text-button-colored: rgb(255.0, 255.0, 255.0);
+	-fx-text-button-text: rgb(100.0, 100.0, 100.0);
+	-fx-text-title-color: rgb(45.0, 45.0, 45.0);
+	-fx-text-subtitle-color: rgb(65.0, 65.0, 65.0);
+	-fx-text-control-title-color: rgb(130.0, 130.0, 130.0);
+	-fx-text-fill: -fx-text-base-color;
+	-dark: rgb(47.0, 52.0, 57.0);
+	-fx-background-color: -dark;
+	/*default font */
+	-fx-font-family: 'Roboto Medium';
+	-fx-font-size: 14.0px;
+	-fx-disabled-opacity: 0.6;
+	/*default colors */
+	-swatch-grey: rgb(200.0, 200.0, 200.0);
+	-swatch-dark-grey: rgb(150.0, 150.0, 150.0);
+	-swatch-light-grey: rgb(230.0, 230.0, 230.0);
+	-swatch-toolbar: rgb(245.0, 245.0, 245.0);
+	-swatch-toolbar-selected: rgb(215.0, 215.0, 215.0);
+	/* 
+     Modena colors
+     */
+	-fx-dark-text-color: white; /* Text color when selected*/
+	-fx-mid-text-color: -fx-text-base-color;
+	-fx-light-text-color: -swatch-light-grey;
+	-fx-body-color: white;
+	/* A bright blue for the focus indicator of objects. Typically used as the
+     * first color in -fx-background-color for the "focused" pseudo-class. Also
+     * typically used with insets of -1.4 to provide a glowing effect.
+     */
+	-fx-focus-color: -swatch-400;
+	-fx-faint-focus-color: -swatch-200;
+	/* A bright blue for highlighting/accenting objects.  For example: selected
+     * text; selected items in menus, lists, trees, and tables; progress bars */
+	-fx-accent: -swatch-400;
+	-fx-dark-text-color: white;
+}
+
+
+/*bottoni*/
+.button-raised {
+	-fx-effect: dropshadow(gaussian, rgb(33.0, 150.0, 243.0, 0.50), 6.0, 0.3, 0, 1);
+	-fx-background-color: rgb(40, 40, 40);
+}
+
+.toggle-button, .button {
+	-fx-text-fill: -fx-text-button-normal;
+	-fx-font-family: 'Roboto';
+	-fx-font-weight: bold;
+	-fx-background-insets: 0.0;
+	-fx-background-radius: 4.0;
+	-fx-padding: 0.7em;
+	-fx-alignment: CENTER;
+}
+
+.button-raised .button .text, .button .text {
+	-fx-text-weight: Bold;
+}
+
+.button:default {
+	-fx-background-color: -swatch-500;
+	-fx-text-fill: -fx-text-button-colored;
+}
+
+.button:armed, .button:default:armed {
+	-fx-background-color: -swatch-grey;
+	-fx-text-fill: -fx-text-button-colored;
+}
+
+/*RadioButton*/
+
+.radio-button {
+	-fx-padding: 10;
+}
+
+.radio-button .text {
+	-fx-fill: -fx-text-base-color;
+}
+
+.radio-button>.radio, .radio-button>.radio.unfocused, .radio-button:disabled>.radio,
+	.radio-button:selected>.radio {
+	-fx-border-radius: 100.0;
+	-fx-border-color: -swatch-grey;
+	-fx-border-width: 2;
+	-fx-background-radius: 100;
+	-fx-background-color: transparent;
+	-fx-padding: 3 3 3 3;
+}
+
+.radio-button:focused:armed>.radio {
+	-fx-background-color: -swatch-100;
+}
+
+.radio-button:selected>.radio>.dot {
+	-fx-background-color: -swatch-500;
+	-fx-background-insets: 0;
+}
+
+/*Datepicker*/
+
+.date-picker-popup .button {
+	-fx-background-color: -swatch-500;
+}
+
+.date-picker-popup>.month-year-pane {
+	-fx-background-color: -swatch-500;
+}
+
+.date-picker-popup>*>.spinner>.button>.left-arrow, .date-picker-popup>*>.spinner>.button>.right-arrow
+	{
+	-fx-background-color: white;
+}
+
+.date-picker-popup>*>.spinner {
+	-fx-border-width: 0;
+}
+
+.date-picker-popup>*>.spinner>.label {
+	-fx-text-fill: white;
+	-fx-font-weight: bold;
+}
+
+.date-picker-popup>*>.day-name-cell, .date-picker-popup>*>.week-number-cell
+	{
+	-fx-font-weight: normal;
+	-fx-text-fill: -swatch-dark-grey;
+	-fx-font-size: 1em;
+}
+
+.date-picker .arrow-button {
+	-fx-background-color: transparent;
+}
+
+.date-picker .arrow-button .arrow {
+	-fx-background-insets: -4;
+}
+
+.date-picker .date-picker-display-node {
+	-fx-border-width: 0;
+}
+
+/*ListView*/
+
+.list-view:focused .list-cell:filled:focused:selected {
+	-fx-background-color: rgb(40, 40, 40);
+	-fx-text-fill: -swatch-500;
+}
+
+.list-view:hover .list-cell:hover {
+	-fx-background-color: rgb(40, 40, 40);
+	-fx-text-fill: -fx-text-base-color;
+}
+
+.list-cell {
+	-fx-cell-size: 40;
+}
+
+/*Textfield*/
+
+.text {
+	-fx-font-smoothing-type: gray;
+}
+
+.text-area, .text-field {
+	-fx-background-color: transparent;
+	-fx-background-radius: 2.0;
+	-fx-padding: 0.5em 0.5em 0.5em 0.1em;
+	-fx-border-color: -swatch-grey;
+	-fx-border-width: 0 0 2 0;
+	-fx-prompt-text-fill: derive(-dark, 50.0%);
+	-fx-highlight-fill: rgb(94.0, 203.0, 234.0);
+}
+
+.text-area .text, .text-field>*>.text {
+	-fx-effect: null;
+	-fx-fill: -dark;
+}
+
+.text-area {
+	-fx-padding: 0.15em;
+}
+
+.text-area .content {
+	-fx-padding: 0.7em;
+	-fx-border-width: 0.0;
+	-fx-background-color: transparent;
+}
+
+.text-area:focused  .content {
+	-fx-background-color: transparent;
+}
+
+.text-area:focused, .text-field:focused {
+	-fx-border-color: -swatch-500;
+}
+
+/*Label*/
+Label {
+	-fx-text-fill: -fx-text-base-color;
+}
+
+.testo {
+	-fx-font-size: 14;
+}
+
+.titolo {
+	-fx-font-size: 18;
+}
+
+
+
+/*Combobox*/
+.combo-box-base, .choice-box {
+	-fx-background-color: transparent;
+	-fx-border-color: -swatch-grey;
+	-fx-border-width: 0 0 2 0;
+	-fx-background-radius: 0;
+	-fx-border-radius: 0;
+}
+
+.combo-box:focused, .choice-box:focused {
+	-fx-border-color: -swatch-500;
+}
+
+.combo-box-base>.label, .choice-box>.label {
+	-fx-padding: 0.7em 0.7em 0.7em 0em;
+}
+
+.combo-box-base>.arrow-button, .choice-box>.open-button {
+	-fx-padding: 1.2em 0.7em 1.2em 0.5em;
+	-fx-background-radius: 0.0 2.0 2.0 0.0;
+}
+
+.combo-box-base>.arrow-button>.arrow, .choice-box>.open-button>.arrow {
+	-fx-background-color: -swatch-grey;
+}
+
+.combo-box-base .arrow-button:hover .arrow, .spinner .increment-arrow-button:hover .increment-arrow,
+	.spinner .decrement-arrow-button:hover .decrement-arrow {
+	-fx-background-color: -swatch-500;
+}
